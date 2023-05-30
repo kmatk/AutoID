@@ -27,12 +27,13 @@ add_bg()
 # Function to load model to cache
 @st.cache_resource(show_spinner="Loading AutoID Model...")
 def load_model():
-    model = tf.keras.models.load_model('models/model1', compile=False)
+    model = tf.keras.models.load_model('model/', compile=False)
     return model
 
+with st.columns([0.4,1,0.01])[1]:
+    model = load_model()
 
 def predict(img):
-    model = load_model()
     test_image = img.resize((64,64))
     test_image = tf.keras.preprocessing.image.img_to_array(test_image)
     test_image = test_image / 255.0
