@@ -5,12 +5,12 @@ from PIL import Image
 import base64
 
 # Load style sheet
-with open('style.css') as style:
+with open('streamlit/style.css') as style:
     st.markdown(f"<style>{style.read()}</style>", unsafe_allow_html=True)
 
 # Create and run function to apply background
 def add_bg():
-    with open('background.jpg', 'rb') as img:
+    with open('streamlit/background.jpg', 'rb') as img:
         img_encoded = base64.b64encode(img.read())
 
     st.markdown(
@@ -27,7 +27,7 @@ add_bg()
 # Function to load model to cache
 @st.cache_resource(show_spinner="Loading AutoID Model...")
 def load_model():
-    model = tf.keras.models.load_model('model/', compile=False)
+    model = tf.keras.models.load_model('streamlit/model/', compile=False)
     return model
 
 with st.columns([0.4,1,0.01])[1]:
