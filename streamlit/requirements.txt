@@ -1,0 +1,5 @@
+numpy
+tensorflow
+PIL
+base64
+streamlit
