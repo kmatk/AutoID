@@ -63,7 +63,7 @@ def main():
     st.write('<p style="font-size: 22px">By Kevin Atkinson</p>', unsafe_allow_html=True)
     st.write('#')
 
-    uploaded_image = st.file_uploader(label='Pick an image to identify:', type=['jpg', 'jpeg', 'png'])
+    uploaded_image = st.file_uploader(label='Pick an image to identify:', type=['jpg', 'jpeg'])
     if uploaded_image is not None:
         image_data = Image.open(uploaded_image)
         with st.columns([0.01,1,0.02])[1]:
