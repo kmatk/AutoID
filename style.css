@@ -1,0 +1,64 @@
+/*
+Template for this CSS style sheet sourced from
+https://github.com/Nwosu-Ihueze/first_deploy/blob/main/custom.css
+and heavily modified to suit my purpose.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Rajdhani';
+  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #fff;
+  background: rgb(4, 37, 52);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgb(87, 105, 132);
+}
+
+h1{
+    font-family: 'Rajdhani';
+    font-weight: bold;
+    font-size: 84pt;
+    color: #fff;
+    text-align: center;
+}
+
+h2{
+  font-family: 'Rajdhani';
+  font-weight: bold;
+  font-size: 32pt;
+  color: #fff;
+  text-align: center;
+}
+
+h3{
+  color: #fff;
+  font-family: 'Rajdhani';
+  font-weight: bold;
+  font-size: 20pt;
+  text-align: center;
+}
+
+p{
+  color: #fff;
+  font-family: 'Rajdhani';
+  font-weight: bold;
+  text-align: center;
+  font-size: 18pt;
+
+}
+
+.stButton > button {
+  color: #fff;
+  background-color: #333;
+}
+
+.stButton > button:hover {
+  background-color: #333;
+  border-style: solid;
+  border-color: #fff;
+}  
