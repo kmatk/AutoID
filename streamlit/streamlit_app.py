@@ -10,7 +10,7 @@ with open('style.css') as style:
 
 # Create and run function to apply background
 def add_bg():
-    with open('images/background.jpg', 'rb') as img:
+    with open('background.jpg', 'rb') as img:
         img_encoded = base64.b64encode(img.read())
 
     st.markdown(
