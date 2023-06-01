@@ -53,7 +53,7 @@ It seems as though our validation accuracy may have begun to diverge from our tr
 As a demonstration of what our model is capable of we created a Streamlit app which is capable of receiving images and outputting a gender and age classification. Bear in mind that for best results the images should contain greater than 50% facial context. This app can be found [here](https://kmatk-autoid-app-lcpx0a.streamlit.app/).
 
 Here's a preview of the app in action:  
-https://github.com/kmatk/AutoID/assets/16636321/b14ba185-f684-4964-bd52-161e89eb61e8.mp4
+https://github.com/kmatk/AutoID/assets/16636321/b14ba185-f684-4964-bd52-161e89eb61e8
 
 ## Conclusion
 All in all, we gathered and prepared a massive dataset, built functions for analysis and model imputation, and build multiple very large and complex multi-target deep learning models capable of reasonably accurate classification of images. This model and its progeny may well serve to inform marketing decisions for retailers in the near future.
