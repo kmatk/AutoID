@@ -4,11 +4,12 @@ import tensorflow as tf
 from PIL import Image
 import base64
 
-# Load style sheet
-with open('streamlit/style.css') as style:
-    st.markdown(f"<style>{style.read()}</style>", unsafe_allow_html=True)
+# Function to load style sheet
+def load_style():
+    with open('streamlit/style.css') as style:
+        st.markdown(f"<style>{style.read()}</style>", unsafe_allow_html=True)
 
-# Create and run function to apply background
+# Function to apply background
 def add_bg():
     with open('streamlit/background.jpg', 'rb') as img:
         img_encoded = base64.b64encode(img.read())
@@ -21,8 +22,7 @@ def add_bg():
         }}
         </style> """,
         unsafe_allow_html=True)
-    
-add_bg()
+
 
 # Function to load model to cache
 @st.cache_resource(show_spinner="Loading AutoID Model...")
@@ -30,10 +30,7 @@ def load_model():
     model = tf.keras.models.load_model('streamlit/model/', compile=False)
     return model
 
-with st.columns([0.4,1,0.01])[1]:
-    model = load_model()
-
-def predict(img):
+def predict(img, model):
     test_image = img.resize((64,64))
     test_image = tf.keras.preprocessing.image.img_to_array(test_image)
     test_image = test_image / 255.0
@@ -58,6 +55,12 @@ def predict(img):
 
 
 def main():
+    load_style()
+    add_bg()
+
+    with st.columns([0.4,1,0.01])[1]:
+        model = load_model()
+
     st.write('<h1>AutoID</h1>', unsafe_allow_html=True)
     st.write('<h2>Classifying Demographics</h2>', unsafe_allow_html=True)
     st.write('<p style="font-size: 22px">By Kevin Atkinson</p>', unsafe_allow_html=True)
@@ -69,7 +72,7 @@ def main():
         with st.columns([0.01,1,0.02])[1]:
             st.image(image_data, use_column_width=True)
 
-    # THIS CODE IS EXTREMELY JANKY. STREAMLIT MAKES IT VERY DIFFICULT TO CENTER IMAGES.
+    # THIS CODE IS EXTREMELY JANKY. STREAMLIT MAKES IT VERY DIFFICULT TO CENTER CONTENT.
     # THIS IS THE SIMPLEST WORK-AROUND I COULD FIND. I'M SORRY TO WHOEVER SEES THIS :(
 
     col4, col5, col6 = st.columns([1,1,0.3])
@@ -85,7 +88,7 @@ def main():
                 with col8:
                     with st.spinner('Identifying...', ):
                         with col10[0]:
-                            predictions, confidence = predict(image_data)
+                            predictions, confidence = predict(image_data, model)
                             st.markdown(f"<h2>{predictions}</h2>", unsafe_allow_html=True)
                             st.markdown(f"<h3>{confidence}</h3>", unsafe_allow_html=True)
         except:
