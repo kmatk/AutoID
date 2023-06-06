@@ -53,7 +53,10 @@ It seems as though our validation accuracy may have begun to diverge from our tr
 As a demonstration of what our model is capable of we created a Streamlit app which is capable of receiving images and outputting a gender and age classification. Bear in mind that for best results the images should contain greater than 50% facial context. This app can be found [here](https://kmatk-autoid-app-lcpx0a.streamlit.app/).
 
 Here's a preview of the app in action:  
-https://github.com/kmatk/AutoID/assets/16636321/7ef2e14c-08ed-462b-9d0e-1bddf2389a30
+
+
+
+https://github.com/kmatk/AutoID/assets/16636321/5e32a1e7-b157-4e67-9dc6-6abb77d9755a
 
 
 
