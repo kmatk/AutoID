@@ -24,6 +24,7 @@ def add_bg():
         unsafe_allow_html=True)
 
 
+
 # Function to load model to cache
 @st.cache_resource(show_spinner="Loading AutoID Model...")
 def load_model():
@@ -61,18 +62,7 @@ def main():
     with st.columns([0.4,1,0.01])[1]:
         model = load_model()
 
-    st.sidebar.title('+')
-    st.markdown(
-        """
-        <style>
-         [data-testid="stSidebar"] {
-            background-image: linear-gradient(#034962,#041b23);
-            color: white;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    st.sidebar.title('AutoID')
     st.sidebar.write('This is a Placeholder')
 
 

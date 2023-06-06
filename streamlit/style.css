@@ -62,3 +62,8 @@ p{
   border-style: solid;
   border-color: #fff;
 }  
+
+[data-testid="stSidebar"] {
+  background-image: linear-gradient(#034962,#041b23);
+  color: white;
+}
