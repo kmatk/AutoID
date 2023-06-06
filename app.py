@@ -61,6 +61,21 @@ def main():
     with st.columns([0.4,1,0.01])[1]:
         model = load_model()
 
+    st.sidebar.title('+')
+    st.markdown(
+        """
+        <style>
+         [data-testid="stSidebar"] {
+            background-image: linear-gradient(#034962,#041b23);
+            color: white;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    st.sidebar.write('This is a Placeholder')
+
+
     st.write('<h1>AutoID</h1>', unsafe_allow_html=True)
     st.write('<h2>Classifying Demographics</h2>', unsafe_allow_html=True)
     st.write('<p style="font-size: 22px">By Kevin Atkinson</p>', unsafe_allow_html=True)
