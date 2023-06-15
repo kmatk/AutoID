@@ -63,7 +63,7 @@ def main():
         model = load_model()
 
     st.sidebar.title('AutoID')
-    st.sidebar.write('This is a Placeholder')
+    st.sidebar.write('Instructions: ')
 
 
     st.write('<h1>AutoID</h1>', unsafe_allow_html=True)
