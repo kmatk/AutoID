@@ -173,8 +173,8 @@ df['gender'] = df['gender'].str.get_dummies()['M']
 
 df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
 
-train_gen, val_gen = ImgGen(df_train, img_size=(16,16), vsplit=0.4, batch_size=128)
-test_gen, null_gen = ImgGen(df_test, img_size=(16,16), batch_size=128, vsplit=0, brightness=None, rrange=0, shuffle=False)
+train_gen, val_gen = ImgGen(df_train, img_size=(128,128), vsplit=0.2, batch_size=128)
+test_gen, null_gen = ImgGen(df_test, img_size=(128,128), batch_size=128, vsplit=0, brightness=None, rrange=0, shuffle=False)
 
 gen_sample(train_gen)
 
@@ -182,7 +182,7 @@ model = make_model(shape=(128, 128,3))
 
 model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], metrics='accuracy')
 
-results = model.fit(train_gen, epochs=1, validation_data=val_gen, validation_steps=1)
+results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=500)
 
 plot_history(results, 'images/test_results.png')
 
