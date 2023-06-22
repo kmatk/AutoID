@@ -140,6 +140,22 @@ def plot_history(history):
 
     fig.savefig('results_plot.png');
 
+def gen_sample(generator):
+    """Function which takes in an image generator and displays a sample of 9 images"""
+    fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(10, 10))
+    # Create list for labeling images
+    age_groups = ['18-24', '25-34', '35-44', '45-54', '55-64', '65+']
+    genders = ['Female', 'Male']
+    img, label = generator.next()
+    for i, ax in enumerate(axes.flat):
+        title = f'Age: {age_groups[label[0][i].argmax()]}, Gender: {genders[label[1][i]]}'
+        ax.imshow(img[i])
+        ax.set(title=f"{title}")
+        ax.axis('off')
+    fig.suptitle('Examples of Generated Images', fontsize=30)
+    plt.tight_layout()
+    fig.savefig('images/image_samples.png', transparent=False)
+
 # loading in datasets
 imdb = pd.read_csv('B3FD_metadata/B3FD-IMDB_age_gender.csv', delimiter=' ')
 wiki = pd.read_csv('B3FD_metadata/B3FD-WIKI_age_gender.csv', delimiter=' ')
@@ -180,6 +196,8 @@ df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
 
 train_gen, val_gen = ImgGen(df_train, vsplit=0.4, batch_size=128)
 test_gen, null_gen = ImgGen(df_test, batch_size=128, vsplit=0, brightness=None, rrange=0, shuffle=False)
+
+gen_sample(train_gen)
 
 model = make_model()
 
