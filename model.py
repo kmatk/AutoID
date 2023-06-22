@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 
 import keras
 import tensorflow as tf
-import visualkeras
+# import visualkeras
 from keras.losses import CategoricalCrossentropy, BinaryCrossentropy
 from keras.layers import Activation, Add, AveragePooling2D, BatchNormalization, Conv2D, Dense, Flatten, MaxPooling2D, Dropout
 from keras.preprocessing.image import ImageDataGenerator
@@ -97,11 +97,8 @@ def make_model(shape=(128,128,3)):
 
 # There exists much more pythonic ways to accomplish this,
 # however for the sake of easy I created this function in a much more ugly way
-def plot_history(history):
-    if 'age_recall' in history.history.keys():
-        fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(1, 5, figsize=(25,7.5))
-    else:
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 7.5))
+def plot_history(history, file):
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(15, 7.5))
 
     ax1.set_title('Loss')
     sns.lineplot(x=history.epoch, y=history.history['loss'], ax=ax1, label='Train Loss')
@@ -120,25 +117,7 @@ def plot_history(history):
     sns.lineplot(x=history.epoch, y=history.history['age_accuracy'], ax=ax3, label='Train Accuracy: Age')
     sns.lineplot(x=history.epoch, y=history.history['val_age_accuracy'], ax=ax3, label='Val Accuracy: Age')
 
-    try:
-        ax4.set_title('Precision')
-        ax4.set_ylim([0, None])
-        sns.lineplot(x=history.epoch, y=history.history['gender_precision_1'], ax=ax4, label='Train Precision: Gender')
-        sns.lineplot(x=history.epoch, y=history.history['val_gender_precision_1'], ax=ax4, label='Val Precision: Gender')
-        sns.lineplot(x=history.epoch, y=history.history['age_precision'], ax=ax4, label='Train Precision: Age')
-        sns.lineplot(x=history.epoch, y=history.history['val_age_precision'], ax=ax4, label='Val Precision: Age')
-
-        ax5.set_title('Recall')
-        ax5.set_ylim([0, None])
-        sns.lineplot(x=history.epoch, y=history.history['gender_recall_1'], ax=ax5, label='Train Recall: Gender')
-        sns.lineplot(x=history.epoch, y=history.history['val_gender_recall_1'], ax=ax5, label='Val Recall: Gender')
-        sns.lineplot(x=history.epoch, y=history.history['age_recall'], ax=ax5, label='Train Recall: Age')
-        sns.lineplot(x=history.epoch, y=history.history['val_age_recall'], ax=ax5, label='Val Recall: Age')
-
-    except:
-        pass
-
-    fig.savefig('results_plot.png');
+    fig.savefig(file)
 
 def gen_sample(generator):
     """Function which takes in an image generator and displays a sample of 9 images"""
@@ -194,18 +173,18 @@ df['gender'] = df['gender'].str.get_dummies()['M']
 
 df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
 
-train_gen, val_gen = ImgGen(df_train, vsplit=0.4, batch_size=128)
-test_gen, null_gen = ImgGen(df_test, batch_size=128, vsplit=0, brightness=None, rrange=0, shuffle=False)
+train_gen, val_gen = ImgGen(df_train, img_size=(16,16), vsplit=0.4, batch_size=128)
+test_gen, null_gen = ImgGen(df_test, img_size=(16,16), batch_size=128, vsplit=0, brightness=None, rrange=0, shuffle=False)
 
 gen_sample(train_gen)
 
-model = make_model()
+model = make_model(shape=(128, 128,3))
 
-model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], loss_weights=[25,1], metrics=['accuracy', 'Recall', 'Precision'])
+model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], metrics='accuracy')
 
-results = model.fit(train_gen, epochs=100, validation_data=val_gen, validation_steps=500)
+results = model.fit(train_gen, epochs=1, validation_data=val_gen, validation_steps=1)
 
-plot_history(results)
+plot_history(results, 'images/test_results.png')
 
-model.save('models/model_no_opt', include_optimizer=False)
-model.save('models/model_w_opt')
+model.save('models/model_no_opt_test', include_optimizer=False)
+model.save('models/model_w_opt_test')
