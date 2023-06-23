@@ -164,3 +164,6 @@ B3FD/
 B3FD_metadata/
 debug/
 models/
+
+# KEYS
+kevins_key.pem
