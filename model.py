@@ -1,7 +1,6 @@
 import os
 import platform
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -10,7 +9,6 @@ from sklearn.model_selection import train_test_split
 
 import keras
 import tensorflow as tf
-# import visualkeras
 from keras.losses import CategoricalCrossentropy, BinaryCrossentropy
 from keras.layers import Activation, Add, AveragePooling2D, BatchNormalization, Conv2D, Dense, Flatten, MaxPooling2D, Dropout
 from keras.preprocessing.image import ImageDataGenerator
@@ -47,9 +45,9 @@ def ImgGen(dataframe, img_size=(128,128), batch_size=32, brightness=[0.7, 1.3], 
     
     val_gen = val_datagen.flow_from_dataframe(dataframe=dataframe, directory=dir, x_col='path', y_col=['age', 'gender'], class_mode='multi_output', batch_size=batch_size,
                                                   target_size=img_size, subset='validation', shuffle=shuffle, seed=seed)
-    
 
     return train_gen, val_gen
+
 
 def conv_block(x, filter):
     # copying input x
@@ -71,6 +69,7 @@ def conv_block(x, filter):
     x = Activation('relu')(x)
 
     return x 
+
 
 def make_model(shape=(128,128,3)):
     filter_size = 128
@@ -125,6 +124,7 @@ def plot_history(history, file):
 
     fig.savefig(file)
 
+# Function to display sample images from generator
 def gen_sample(generator):
     """Function which takes in an image generator and displays a sample of 9 images"""
     fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(10, 10))
@@ -141,56 +141,62 @@ def gen_sample(generator):
     plt.tight_layout()
     fig.savefig(f'images{slash}image_samples.png', transparent=False)
 
-# loading in datasets
-imdb = pd.read_csv(f'B3FD_metadata{slash}B3FD-IMDB_age_gender.csv', delimiter=' ')
-wiki = pd.read_csv(f'B3FD_metadata{slash}B3FD-WIKI_age_gender.csv', delimiter=' ')
 
-# combining datatsets
-df = pd.concat([imdb, wiki])
-df = df.reset_index(drop=True)
+if __name__ == '__main__':
+    # loading in datasets
+    imdb = pd.read_csv(f'B3FD_metadata{slash}B3FD-IMDB_age_gender.csv', delimiter=' ')
+    wiki = pd.read_csv(f'B3FD_metadata{slash}B3FD-WIKI_age_gender.csv', delimiter=' ')
 
-# function to group ages
-def age_split(age):
-    if age < 18:
-        return 'X'
-    if age in range(18,25):
-        return 'A'
-    if age in range(25,35):
-        return 'B'
-    if age in range(35,45):
-        return 'C'
-    if age in range(45,55):
-        return 'D'
-    if age in range(55,65):
-        return 'E'
-    else:
-        return 'F'
-    
-df['age'] = df['age'].apply(age_split)
+    # combining datatsets
+    df = pd.concat([imdb, wiki])
+    df = df.reset_index(drop=True)
 
-# Dropping indiviudals under 18
-df = df.drop(df.loc[df['age'] == 'X'].index)
-df = df.reset_index(drop=True)
+    # function to group ages
+    def age_split(age):
+        if age < 18:
+            return 'X'
+        if age in range(18,25):
+            return 'A'
+        if age in range(25,35):
+            return 'B'
+        if age in range(35,45):
+            return 'C'
+        if age in range(45,55):
+            return 'D'
+        if age in range(55,65):
+            return 'E'
+        else:
+            return 'F'
+        
+    df['age'] = df['age'].apply(age_split)
 
-ohe = OneHotEncoder(sparse=False)
-age = ohe.fit_transform(df[['age']]).tolist()
-df['age'] = age
-df['gender'] = df['gender'].str.get_dummies()['M']
+    # Dropping indiviudals under 18
+    df = df.drop(df.loc[df['age'] == 'X'].index)
+    df = df.reset_index(drop=True)
 
-df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
+    ohe = OneHotEncoder(sparse=False)
+    age = ohe.fit_transform(df[['age']]).tolist()
+    df['age'] = age
+    df['gender'] = df['gender'].str.get_dummies()['M']
 
-train_gen, val_gen = ImgGen(df_train, img_size=(128,128), vsplit=0.2, batch_size=128)
-test_gen, null_gen = ImgGen(df_test, img_size=(128,128), batch_size=128, vsplit=0, brightness=None, rrange=0, shuffle=False)
+    df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
 
-gen_sample(train_gen)
+    BATCH_SIZE = 128
 
-model = make_model(shape=(128, 128,3))
+    train_gen, val_gen = ImgGen(df_train, img_size=(128,128), vsplit=0.2, batch_size=BATCH_SIZE)
+    test_gen, null_gen = ImgGen(df_test, img_size=(128,128), batch_size=BATCH_SIZE, vsplit=0, brightness=None, rrange=0, shuffle=False)
 
-model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], metrics='accuracy')
+    gen_sample(train_gen)
 
-results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=500)
+    model = make_model(shape=(128, 128,3))
 
-plot_history(results, f'images{slash}test_results.png')
+    model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], metrics='accuracy')
 
-model.save(f'models{slash}model_no_opt_test', include_optimizer=False)
-model.save(f'models{slash}model_w_opt_test')
+    results = model.fit(train_gen.repeat(), steps_per_epoch=len(train_gen.filenames)//BATCH_SIZE, epochs=50, validation_data=val_gen.repeat(), validation_steps=len(val_gen.filenames)//BATCH_SIZE)
+
+    plot_history(results, f'images{slash}test_results.png')
+
+    model.save(f'models{slash}model_no_opt_test', include_optimizer=False)
+    model.save(f'models{slash}model_w_opt_test')
+
+    model.evaluate(test_gen)
