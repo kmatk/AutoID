@@ -36,10 +36,10 @@ def ImgGen(dataframe, img_size=(128,128), batch_size=32, brightness=[0.7, 1.3], 
     
     val_datagen = ImageDataGenerator(validation_split=vsplit, rescale=1./255)
     
-    train_gen = train_datagen.flow_from_dataframe(dataframe, dir, x_col='path', y_col=['age', 'gender'], class_mode='multi_output', batch_size=batch_size,
+    train_gen = train_datagen.flow_from_dataframe(dataframe=dataframe, directory=dir, x_col='path', y_col=['age', 'gender'], class_mode='multi_output', batch_size=batch_size,
                                                   target_size=img_size, subset='training', shuffle=shuffle, seed=seed)
     
-    val_gen = val_datagen.flow_from_dataframe(dataframe, dir, x_col='path', y_col=['age', 'gender'], class_mode='multi_output', batch_size=batch_size,
+    val_gen = val_datagen.flow_from_dataframe(dataframe=dataframe, directory=dir, x_col='path', y_col=['age', 'gender'], class_mode='multi_output', batch_size=batch_size,
                                                   target_size=img_size, subset='validation', shuffle=shuffle, seed=seed)
     
 
