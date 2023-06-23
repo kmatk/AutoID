@@ -30,6 +30,7 @@ def ImgGen(dataframe, img_size=(128,128), batch_size=32, brightness=[0.7, 1.3], 
     """
 
     dir = os.getcwd() + '\\B3FD\\'
+    print(dir)
 
     train_datagen = ImageDataGenerator(validation_split=vsplit, rotation_range=rrange, fill_mode='nearest',
                                        brightness_range=brightness, rescale=1./255)
