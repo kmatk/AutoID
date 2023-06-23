@@ -15,6 +15,11 @@ from keras.losses import CategoricalCrossentropy, BinaryCrossentropy
 from keras.layers import Activation, Add, AveragePooling2D, BatchNormalization, Conv2D, Dense, Flatten, MaxPooling2D, Dropout
 from keras.preprocessing.image import ImageDataGenerator
 
+if platform.system() == 'Windows':
+    slash = '\\'
+else:
+    slash = '/'
+
 def ImgGen(dataframe, img_size=(128,128), batch_size=32, brightness=[0.7, 1.3], vsplit=0.2, rrange=15, seed=2023, shuffle=True):
     """Function for the creation of Image Data Generators. 
     
@@ -29,10 +34,8 @@ def ImgGen(dataframe, img_size=(128,128), batch_size=32, brightness=[0.7, 1.3], 
     seed: random seed; default 2023
     shuffle: boolean determining whether to shuffle the images; default True
     """
-    if platform.system() == 'Windows':
-        dir = os.getcwd() + '\\B3FD\\'
-    else:
-        dir = os.getcwd() + '/B3FD/'
+
+    dir = os.getcwd() + slash + 'B3FD' + slash
 
     print(dir)
 
@@ -138,11 +141,11 @@ def gen_sample(generator):
         ax.axis('off')
     fig.suptitle('Examples of Generated Images', fontsize=30)
     plt.tight_layout()
-    fig.savefig('images/image_samples.png', transparent=False)
+    fig.savefig(f'images{slash}image_samples.png', transparent=False)
 
 # loading in datasets
-imdb = pd.read_csv('B3FD_metadata/B3FD-IMDB_age_gender.csv', delimiter=' ')
-wiki = pd.read_csv('B3FD_metadata/B3FD-WIKI_age_gender.csv', delimiter=' ')
+imdb = pd.read_csv(f'B3FD_metadata{slash}B3FD-IMDB_age_gender.csv', delimiter=' ')
+wiki = pd.read_csv(f'B3FD_metadata{slash}B3FD-WIKI_age_gender.csv', delimiter=' ')
 
 # combining datatsets
 df = pd.concat([imdb, wiki])
@@ -189,7 +192,7 @@ model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentr
 
 results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=500)
 
-plot_history(results, 'images/test_results.png')
+plot_history(results, f'images{slash}test_results.png')
 
-model.save('models/model_no_opt_test', include_optimizer=False)
-model.save('models/model_w_opt_test')
+model.save(f'models{slash}model_no_opt_test', include_optimizer=False)
+model.save(f'models{slash}model_w_opt_test')
