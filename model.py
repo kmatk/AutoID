@@ -1,4 +1,5 @@
 import os
+import platform
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -28,8 +29,11 @@ def ImgGen(dataframe, img_size=(128,128), batch_size=32, brightness=[0.7, 1.3], 
     seed: random seed; default 2023
     shuffle: boolean determining whether to shuffle the images; default True
     """
+    if platform.system() == 'Windows':
+        dir = os.getcwd() + '\\B3FD\\'
+    else:
+        dir = os.getcwd() + '/B3FD/'
 
-    dir = os.getcwd() + '\\B3FD\\'
     print(dir)
 
     train_datagen = ImageDataGenerator(validation_split=vsplit, rotation_range=rrange, fill_mode='nearest',
