@@ -1,4 +1,5 @@
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import platform
 import pandas as pd
 import seaborn as sns
@@ -75,30 +76,31 @@ def make_model(shape=(128,128,3)):
     filter_size = 128
     
     # first layer and pooling
-    input_layer = keras.Input(shape=shape, name='input_layer')
-    x = Conv2D(128, kernel_size=(3,3), padding='same')(input_layer)
-    x = BatchNormalization()(x)
-    x = Activation('relu')(x)
-    x = MaxPooling2D((2,2), strides=(2,2), padding='same')(x)
+    with tf.device('/gpu:0'):
+        input_layer = keras.Input(shape=shape, name='input_layer')
+        x = Conv2D(128, kernel_size=(3,3), padding='same')(input_layer)
+        x = BatchNormalization()(x)
+        x = Activation('relu')(x)
+        x = MaxPooling2D((2,2), strides=(2,2), padding='same')(x)
 
-    # cycle through layer blocks
-    for i in range(5):
-        if i > 0:
-            filter_size *= 2
-        x = conv_block(x, filter_size)
-    
-    # penultimate layer
-    x = AveragePooling2D((2,2), padding='same')(x)
-    x = Flatten()(x)
-    x = Dense(128, activation='relu')(x)
-    x = Dropout(0.5)(x)
-    
-    # output layers
-    age_output = Dense(6, activation='softmax', name='age')(x)
-    gender_output = Dense(1, activation='sigmoid', name='gender')(x)
+        # cycle through layer blocks
+        for i in range(5):
+            if i > 0:
+                filter_size *= 2
+            x = conv_block(x, filter_size)
+        
+        # penultimate layer
+        x = AveragePooling2D((2,2), padding='same')(x)
+        x = Flatten()(x)
+        x = Dense(128, activation='relu')(x)
+        x = Dropout(0.5)(x)
+        
+        # output layers
+        age_output = Dense(6, activation='softmax', name='age')(x)
+        gender_output = Dense(1, activation='sigmoid', name='gender')(x)
 
-    model = keras.Model(inputs=input_layer, outputs=[age_output, gender_output])
-    return model
+        model = keras.Model(inputs=input_layer, outputs=[age_output, gender_output])
+        return model
 
 # There exists much more pythonic ways to accomplish this,
 # however for the sake of easy I created this function in a much more ugly way
@@ -174,7 +176,7 @@ if __name__ == '__main__':
     df = df.drop(df.loc[df['age'] == 'X'].index)
     df = df.reset_index(drop=True)
 
-    ohe = OneHotEncoder(sparse=False)
+    ohe = OneHotEncoder(sparse_output=False)
     age = ohe.fit_transform(df[['age']]).tolist()
     df['age'] = age
     df['gender'] = df['gender'].str.get_dummies()['M']
