@@ -192,7 +192,7 @@ if __name__ == '__main__':
 
     model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], metrics='accuracy')
 
-    results = model.fit(train_gen, steps_per_epoch=len(train_gen.filenames)//BATCH_SIZE, epochs=50, validation_data=val_gen, validation_steps=len(val_gen.filenames)//BATCH_SIZE)
+    results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=(len(val_gen.filenames)//BATCH_SIZE))
 
     plot_history(results, f'images{slash}test_results.png')
 
