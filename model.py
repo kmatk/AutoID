@@ -202,3 +202,7 @@ if __name__ == '__main__':
     model.save(f'models{slash}model_w_opt_test')
 
     model.evaluate(test_gen)
+
+
+# based on the results of this model, it seems wise to attempt treating the age as if it were a regression problem.
+# We will do this with model_v2
