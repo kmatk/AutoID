@@ -12,6 +12,7 @@ import keras
 import tensorflow as tf
 from keras.losses import CategoricalCrossentropy, BinaryCrossentropy
 from keras.layers import Activation, Add, AveragePooling2D, BatchNormalization, Conv2D, Dense, Flatten, MaxPooling2D, Dropout
+from keras.callbacks import EarlyStopping
 from keras.preprocessing.image import ImageDataGenerator
 
 if platform.system() == 'Windows':
@@ -223,7 +224,9 @@ if __name__ == '__main__':
     
     model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], metrics='accuracy')
 
-    results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=(len(val_gen.filenames)//BATCH_SIZE))
+    callback = EarlyStopping(monitor='val_loss', patience=3)
+
+    results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=(len(val_gen.filenames)//BATCH_SIZE), callbacks=[callback])
 
     plot_history(results, f'images{slash}results_256.png')
 
