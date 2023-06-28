@@ -211,7 +211,7 @@ if __name__ == '__main__':
 
     df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
 
-    BATCH_SIZE = 128
+    BATCH_SIZE = 32
 
     train_gen, val_gen = ImgGen(df_train, img_size=(256,256), brightness=[0.5, 1.5], rrange=30, vsplit=0.2, batch_size=BATCH_SIZE)
     test_gen, null_gen = ImgGen(df_test, img_size=(256,256), batch_size=BATCH_SIZE, vsplit=0, brightness=None, rrange=0, shuffle=False)
