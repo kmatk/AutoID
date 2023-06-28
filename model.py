@@ -65,14 +65,34 @@ def conv_block(x, filter):
     x = BatchNormalization()(x)
     
     # creating residual connection
-    x_resid = Conv2D(filter, kernel_size=3, strides=(2,2), padding='same')(x_resid)
+    x_resid = Conv2D(filter, kernel_size=(3,3), strides=(2,2), padding='same')(x_resid)
     x = Add()([x, x_resid])
     x = Activation('relu')(x)
 
     return x 
 
+def identity_block(x, filter):
+    # copying input x
+    x_resid = x
 
-def make_model(shape=(128,128,3)):
+    # identity layer 1
+    x = Conv2D(filter, kernel_size=(3,3), padding='same')(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+
+    # identity layer 2
+    x = Conv2D(filter, (3,3), padding='same')(x)
+    x = BatchNormalization()(x)
+
+    # creating residual connection
+    x = Add()([x, x_resid])
+    x = Activation('relu')(x)
+
+    return x
+
+
+
+def make_model(shape=(256,256,3)):
     filter_size = 128
     
     # first layer and pooling
@@ -185,12 +205,12 @@ if __name__ == '__main__':
 
     BATCH_SIZE = 128
 
-    train_gen, val_gen = ImgGen(df_train, img_size=(128,128), vsplit=0.2, batch_size=BATCH_SIZE)
-    test_gen, null_gen = ImgGen(df_test, img_size=(128,128), batch_size=BATCH_SIZE, vsplit=0, brightness=None, rrange=0, shuffle=False)
+    train_gen, val_gen = ImgGen(df_train, img_size=(256,256), vsplit=0.2, batch_size=BATCH_SIZE)
+    test_gen, null_gen = ImgGen(df_test, img_size=(256,256), batch_size=BATCH_SIZE, vsplit=0, brightness=None, rrange=0, shuffle=False)
 
     gen_sample(train_gen)
 
-    model = make_model(shape=(128, 128,3))
+    model = make_model(shape=(256, 256, 3))
 
     model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], metrics='accuracy')
 
