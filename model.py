@@ -169,7 +169,7 @@ def gen_sample(generator):
         ax.axis('off')
     fig.suptitle('Examples of Generated Images', fontsize=30)
     plt.tight_layout()
-    fig.savefig(f'images{slash}image_samples.png', transparent=False)
+    fig.savefig(f'images{slash}image_samples_256.png', transparent=False)
 
 
 if __name__ == '__main__':
@@ -224,9 +224,9 @@ if __name__ == '__main__':
 
     results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=(len(val_gen.filenames)//BATCH_SIZE))
 
-    plot_history(results, f'images{slash}test_results.png')
+    plot_history(results, f'images{slash}results_256.png')
 
-    model.save(f'models{slash}model_no_opt_test', include_optimizer=False)
-    model.save(f'models{slash}model_w_opt_test')
+    model.save(f'models{slash}model_no_opt_256', include_optimizer=False)
+    model.save(f'models{slash}model_w_opt_256')
 
     model.evaluate(test_gen)
