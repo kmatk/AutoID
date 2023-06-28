@@ -93,8 +93,7 @@ def identity_block(x, filter):
 
 
 def make_model(shape=(256,256,3)):
-    filter_size = 128
-    
+
     # first layer and pooling
     with tf.device('/gpu:0'):
         input_layer = keras.Input(shape=shape, name='input_layer')
@@ -104,14 +103,19 @@ def make_model(shape=(256,256,3)):
         x = MaxPooling2D((2,2), strides=(2,2), padding='same')(x)
 
         block_loops = [3, 4, 6, 3]
+        filter_size = 128
 
         # cycle through layer blocks
-        for i in range(5):
+        for i in range(4):
             if i == 0:
-
-            if i > 0:
+                for j in range(block_loops[i]):
+                    x = identity_block(x, filter_size)
+            else:
                 filter_size *= 2
-            x = conv_block(x, filter_size)
+                x = conv_block(x, filter_size)
+                for j in range(block_loops[i] - 1):
+                    x = identity_block(x, filter_size)
+                
         
         # penultimate layer
         x = AveragePooling2D((2,2), padding='same')(x)
@@ -209,13 +213,13 @@ if __name__ == '__main__':
 
     BATCH_SIZE = 128
 
-    train_gen, val_gen = ImgGen(df_train, img_size=(256,256), vsplit=0.2, batch_size=BATCH_SIZE)
+    train_gen, val_gen = ImgGen(df_train, img_size=(256,256), brightness=[0.5, 1.5], rrange=30, vsplit=0.2, batch_size=BATCH_SIZE)
     test_gen, null_gen = ImgGen(df_test, img_size=(256,256), batch_size=BATCH_SIZE, vsplit=0, brightness=None, rrange=0, shuffle=False)
 
     gen_sample(train_gen)
 
     model = make_model(shape=(256, 256, 3))
-
+    
     model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], metrics='accuracy')
 
     results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=(len(val_gen.filenames)//BATCH_SIZE))
