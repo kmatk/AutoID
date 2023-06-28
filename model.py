@@ -58,7 +58,7 @@ def conv_block(x, filter):
     x = Conv2D(filter, kernel_size=(3,3), strides=(2,2), padding='same')(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    x = Dropout(0.1)(x) # Dropout layer
+    x = Dropout(0.2)(x) # Dropout layer
 
     # conv layer 2
     x = Conv2D(filter, kernel_size=(3,3), padding='same')(x)
@@ -79,6 +79,7 @@ def identity_block(x, filter):
     x = Conv2D(filter, kernel_size=(3,3), padding='same')(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
+    x = Dropout(0.2)(x) # Dropout layer
 
     # identity layer 2
     x = Conv2D(filter, (3,3), padding='same')(x)
@@ -121,7 +122,7 @@ def make_model(shape=(256,256,3)):
         x = AveragePooling2D((2,2), padding='same')(x)
         x = Flatten()(x)
         x = Dense(128, activation='relu')(x)
-        x = Dropout(0.5)(x)
+        x = Dropout(0.4)(x)
         
         # output layers
         age_output = Dense(6, activation='softmax', name='age')(x)
@@ -213,12 +214,12 @@ if __name__ == '__main__':
 
     BATCH_SIZE = 32
 
-    train_gen, val_gen = ImgGen(df_train, img_size=(256,256), brightness=[0.5, 1.5], rrange=30, vsplit=0.2, batch_size=BATCH_SIZE)
-    test_gen, null_gen = ImgGen(df_test, img_size=(256,256), batch_size=BATCH_SIZE, vsplit=0, brightness=None, rrange=0, shuffle=False)
+    train_gen, val_gen = ImgGen(df_train, img_size=(128,128), brightness=[0.5, 1.5], rrange=30, vsplit=0.2, batch_size=BATCH_SIZE)
+    test_gen, null_gen = ImgGen(df_test, img_size=(128,128), batch_size=BATCH_SIZE, vsplit=0, brightness=None, rrange=0, shuffle=False)
 
     gen_sample(train_gen)
 
-    model = make_model(shape=(256, 256, 3))
+    model = make_model(shape=(128, 128, 3))
     
     model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], metrics='accuracy')
 
