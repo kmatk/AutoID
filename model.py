@@ -1,4 +1,5 @@
 import os
+import sys
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import platform
 import pandas as pd
@@ -175,6 +176,8 @@ def gen_sample(generator):
 
 
 if __name__ == '__main__':
+    suffix = sys.argv[1]
+
     # loading in datasets
     imdb = pd.read_csv(f'B3FD_metadata{slash}B3FD-IMDB_age_gender.csv', delimiter=' ')
     wiki = pd.read_csv(f'B3FD_metadata{slash}B3FD-WIKI_age_gender.csv', delimiter=' ')
@@ -228,9 +231,9 @@ if __name__ == '__main__':
 
     results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=(len(val_gen.filenames)//BATCH_SIZE), callbacks=[callback])
 
-    plot_history(results, f'images{slash}results_256.png')
+    plot_history(results, f'images{slash}results_{suffix}.png')
 
-    model.save(f'models{slash}model_no_opt_256', include_optimizer=False)
-    model.save(f'models{slash}model_w_opt_256')
+    model.save(f'models{slash}model_no_opt_{suffix}', include_optimizer=False)
+    model.save(f'models{slash}model_w_opt_{suffix}')
 
     model.evaluate(test_gen)
