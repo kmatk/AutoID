@@ -60,7 +60,7 @@ def conv_block(x, filter):
     x = Conv2D(filter, kernel_size=(3,3), strides=(2,2), padding='same')(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    x = Dropout(0.2)(x) # Dropout layer
+    x = Dropout(0.3)(x) # Dropout layer
 
     # conv layer 2
     x = Conv2D(filter, kernel_size=(3,3), padding='same')(x)
@@ -81,7 +81,7 @@ def identity_block(x, filter):
     x = Conv2D(filter, kernel_size=(3,3), padding='same')(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    x = Dropout(0.2)(x) # Dropout layer
+    x = Dropout(0.3)(x) # Dropout layer
 
     # identity layer 2
     x = Conv2D(filter, (3,3), padding='same')(x)
@@ -105,7 +105,7 @@ def make_model(shape=(256,256,3)):
         x = Activation('relu')(x)
         x = MaxPooling2D((2,2), strides=(2,2), padding='same')(x)
 
-        block_loops = [3, 4, 6, 3]
+        block_loops = [1, 3, 4, 2]
         filter_size = 128
 
         # cycle through layer blocks
@@ -124,7 +124,7 @@ def make_model(shape=(256,256,3)):
         x = AveragePooling2D((2,2), padding='same')(x)
         x = Flatten()(x)
         x = Dense(128, activation='relu')(x)
-        x = Dropout(0.4)(x)
+        x = Dropout(0.2)(x)
         
         # output layers
         age_output = Dense(6, activation='softmax', name='age')(x)
@@ -216,7 +216,7 @@ if __name__ == '__main__':
 
     df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
 
-    BATCH_SIZE = 32
+    BATCH_SIZE = 128
 
     train_gen, val_gen = ImgGen(df_train, img_size=(128,128), brightness=[0.5, 1.5], rrange=30, vsplit=0.2, batch_size=BATCH_SIZE)
     test_gen, null_gen = ImgGen(df_test, img_size=(128,128), batch_size=BATCH_SIZE, vsplit=0, brightness=None, rrange=0, shuffle=False)
@@ -234,6 +234,6 @@ if __name__ == '__main__':
     plot_history(results, f'images{slash}results_{suffix}.png')
 
     model.save(f'models{slash}model_no_opt_{suffix}', include_optimizer=False)
-    model.save(f'models{slash}model_w_opt_{suffix}')
+    model.save(f'models{slash}model_with_opt_{suffix}')
 
     model.evaluate(test_gen)
