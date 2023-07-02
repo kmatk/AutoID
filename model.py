@@ -158,7 +158,7 @@ def plot_history(history, file):
     fig.savefig(file)
 
 # Function to display sample images from generator
-def gen_sample(generator):
+def gen_sample(generator, file):
     """Function which takes in an image generator and displays a sample of 9 images"""
     fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(10, 10))
     # Create list for labeling images
@@ -172,7 +172,7 @@ def gen_sample(generator):
         ax.axis('off')
     fig.suptitle('Examples of Generated Images', fontsize=30)
     plt.tight_layout()
-    fig.savefig(f'images{slash}image_samples_256.png', transparent=False)
+    fig.savefig(file, transparent=False)
 
 
 if __name__ == '__main__':
@@ -221,7 +221,7 @@ if __name__ == '__main__':
     train_gen, val_gen = ImgGen(df_train, img_size=(128,128), brightness=[0.5, 1.5], rrange=30, vsplit=0.2, batch_size=BATCH_SIZE)
     test_gen, null_gen = ImgGen(df_test, img_size=(128,128), batch_size=BATCH_SIZE, vsplit=0, brightness=None, rrange=0, shuffle=False)
 
-    gen_sample(train_gen)
+    gen_sample(train_gen, f'images{slash}samples_{suffix}.png')
 
     model = make_model(shape=(128, 128, 3))
     
