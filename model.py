@@ -105,7 +105,7 @@ def make_model(shape=(256,256,3)):
         x = Activation('relu')(x)
         x = MaxPooling2D((2,2), strides=(2,2), padding='same')(x)
 
-        block_loops = [1, 3, 4, 2]
+        block_loops = [2, 3, 4, 2]
         filter_size = 128
 
         # cycle through layer blocks
