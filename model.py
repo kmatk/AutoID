@@ -225,7 +225,7 @@ if __name__ == '__main__':
 
     model = make_model(shape=(128, 128, 3))
     
-    model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], loss_weights=[10,1], metrics='accuracy')
+    model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], loss_weights=[5,1], metrics='accuracy')
 
     callback = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
