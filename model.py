@@ -227,7 +227,7 @@ if __name__ == '__main__':
     
     model.compile(optimizer='adam', loss=[CategoricalCrossentropy(), BinaryCrossentropy()], loss_weights=[10,1], metrics='accuracy')
 
-    callback = EarlyStopping(monitor='val_loss', patience=4, restore_best_weights=False)
+    callback = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
 
     results = model.fit(train_gen, epochs=50, validation_data=val_gen, validation_steps=(len(val_gen.filenames)//BATCH_SIZE), callbacks=[callback])
 
